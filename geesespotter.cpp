@@ -1,21 +1,26 @@
+// Andrew Stekar
+// November 11, 2022
+
 #include "geesespotter_lib.h"
 #include <iostream>
 
+// creates and populates a dynamically allocated char array
 char * createBoard(std::size_t xdim, std::size_t ydim) {
 
     char *array{new char[xdim*ydim]};
     for (std::size_t i{0}; i < xdim*ydim; ++i) {
         array[i] = '\0';
     }
-
     return array;
 }
 
+// deallocates the current board
 void cleanBoard(char * board) {
     delete[] board;
     return;
 }
 
+// prints the current board to the console
 void printBoard(char * board, std::size_t xdim, std::size_t ydim) {
 
     for (std::size_t i{0}; i < ydim; ++i) {
@@ -28,20 +33,20 @@ void printBoard(char * board, std::size_t xdim, std::size_t ydim) {
             } else {
                 std::cout << "*";
             }
-
         }
         std::cout << std::endl;
     }
     return;
 }
 
+// populating the board with correct numbers (based on proximity to geese)
 void computeNeighbors(char * board, std::size_t xdim, std::size_t ydim) {
     int tally{0};
 
     for (std::size_t i{0}; i < ydim; ++i) {
         for (std::size_t k{0}; k < xdim; ++k) {
             tally = 0;
-        // if not already a goose
+        // if not already a goose at the location
         if (board[i*xdim + k] != 9) {
             // to the left
             if (k != 0) {
@@ -91,6 +96,7 @@ void computeNeighbors(char * board, std::size_t xdim, std::size_t ydim) {
     return;
 }
 
+// initially making every board tile hidden
 void hideBoard(char * board, std::size_t xdim, std::size_t ydim) {
 
     for (std::size_t i{0}; i < xdim*ydim; ++i) {
@@ -99,6 +105,7 @@ void hideBoard(char * board, std::size_t xdim, std::size_t ydim) {
     return;
 }
 
+// reveals the apropriate tiles when chosen to be shown
 int reveal(char * board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std::size_t yloc) {
 
     if (((board[(yloc)*xdim + (xloc)]) & markedBit()) == markedBit()) {// marked field
@@ -147,6 +154,7 @@ int reveal(char * board, std::size_t xdim, std::size_t ydim, std::size_t xloc, s
         return 0;
     }
 
+// marks/unmarks the tile when chosen to be marked
 int mark(char * board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std::size_t yloc) {
 
     if ((board[yloc*xdim + xloc] & hiddenBit()) == 0) {
@@ -157,6 +165,7 @@ int mark(char * board, std::size_t xdim, std::size_t ydim, std::size_t xloc, std
     }
 }
 
+// returns whether the game has been won
 bool isGameWon(char * board, std::size_t xdim, std::size_t ydim) {
 
     unsigned int goose_count{0};
